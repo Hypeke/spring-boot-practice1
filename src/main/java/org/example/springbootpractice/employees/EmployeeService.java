@@ -16,7 +16,27 @@ public class EmployeeService {
     }
     @Bean
     public List<Employee> getAllEmployees() {
-
         return employeeRepository.findAll();
+    }
+
+    public Employee createEmployee(Employee employee) {
+        if(employee.getEmail() == null){
+            throw new IllegalArgumentException("Employee cannot be null");
+        }
+        if(employeeRepository.findByEmail(employee.getEmail()).isPresent()) {
+            throw new RuntimeException("Employee already exists");
+        }
+        if(employee.getSalary() < 5000){
+            throw new RuntimeException("Salary cannot be bigger than 5000");
+        }
+        return employeeRepository.save(employee);
+    }
+
+    public void deleteEmployee(Long id) {
+        if(employeeRepository.findById(id).isEmpty()) {
+            throw new RuntimeException("Employee not found by id=%s".formatted(id));
+        }
+
+        employeeRepository.deleteById(id);
     }
 }
