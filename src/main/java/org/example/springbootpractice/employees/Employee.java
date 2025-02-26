@@ -5,6 +5,7 @@ import lombok.*;
 
 
 import java.time.LocalDate;
+import java.time.Period;
 
 @AllArgsConstructor
 @Setter
@@ -27,6 +28,12 @@ public class Employee {
     private String name;
     private String email;
     private LocalDate birthDate;
+    @Transient
     private Integer age;
     private Integer salary;
+
+    public Integer getAge() {
+        this.age= Period.between(birthDate, LocalDate.now()).getYears();
+        return age;
+    }
 }
