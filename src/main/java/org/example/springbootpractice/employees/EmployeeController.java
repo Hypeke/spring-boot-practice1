@@ -1,12 +1,10 @@
 
 package org.example.springbootpractice.employees;
 
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -33,4 +31,13 @@ public class EmployeeController {
         employeeService.deleteEmployee(id);
     }
 
+    @PutMapping("/{employeeId}")
+    public ResponseEntity<String> updateEmployee(
+            @PathVariable("employeeId") Long id,
+            @RequestParam (value="email", required = false) String email,
+            @RequestParam (value="salary", required = false) Integer salary
+    ) {
+        employeeService.updateEmployee(id, email, salary);
+        return ResponseEntity.ok("Employee updated");
+    }
 }

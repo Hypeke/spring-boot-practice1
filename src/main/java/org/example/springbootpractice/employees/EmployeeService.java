@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EmployeeService {
@@ -38,5 +39,25 @@ public class EmployeeService {
         }
 
         employeeRepository.deleteById(id);
+    }
+
+    public Employee updateEmployee(Long id, String email, Integer salary) {
+        if(employeeRepository.findById(id).isEmpty()) {
+            throw new RuntimeException("Employee not found by id=%s".formatted(id));
+        }
+        if(email != null && !email.isEmpty()) {
+            Optional<Employee> employee = employeeRepository.findByEmail(email);
+            if(employee.isPresent()) {
+                throw new RuntimeException("Employee already exists");
+            }
+            employeeRepository.findById(id).get().setEmail(email);
+        }
+        if(salary != null ) {
+            if(salary < 5000) {
+                throw new IllegalArgumentException("Salary cannot be smaller than 5000");
+            }
+            employeeRepository.findById(id).get().setSalary(salary);
+        }
+        return employeeRepository.save(employeeRepository.findById(id).get());
     }
 }
